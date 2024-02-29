@@ -12,11 +12,14 @@ audioTimes, sr = librosa.load('data/drumMetronome.wav', sr=11025)
 ipd.Audio(audioTimes, rate=sr)
 tempo, beat_times = librosa.beat.beat_track(y=audioTimes, sr=sr, start_bpm=80, units='time')
 
-#rough trim of the data based on the capturing the first drum beat and 3 more metronome hits
-drumTimes= audioTimes[24000:48000]
+#rough trim of the data based on the capturing the first drum beat 
+#and 3 more metronome hits and the next beat after that to be used as a marker
+
+drumTimes= audioTimes[24000:62000]
 
 # write a wav file where we trim the relevant audio:
 sf.write("data/drum2.wav", drumTimes, np.int32(sr))
+'''
 atTrim=[]
 start=0
 stop=len(drumTimes)-1
@@ -25,13 +28,13 @@ while drumTimes[start] ==0:
 while drumTimes[stop] ==0:
   stop-=1
 atTrim = drumTimes[start:stop]
-ipd.Audio(atTrim, rate=sr)
-tempoDrum, beat_timesD = librosa.beat.beat_track(y=atTrim, sr=sr, start_bpm=80, units='time')
+'''
+tempoDrum, beat_timeD = librosa.beat.beat_track(y=drumTimes, sr=sr, start_bpm=80, units='time')
 print("Drum tempo: ",tempoDrum)
-print("Drum beat times Length: ", len(beat_timesD))
-#print("beat times: ",beat_timesD)
+print("Drum beat times Length: ", len(beat_timeD))
+#print("beat times: ",beat_timeD)
 #print("sr: ",sr)
-print("audioTimes Length: ", len(atTrim))
+#print("audioTimes Length: ", len(atTrim))
 #print("audioTime start: ",audioTimes[0:100])
 #print("audioTime end: ",audioTimes[-1:-100:-1])
 #print("audioTimes: ",audioTimes[::1000])
@@ -77,15 +80,24 @@ print(len(audioZeros))
 audioSync=np.append(audioZeros,audioTimeC)
 print(len(audioSync))
 print("--------------------------------")
-print(len(audioTimeC))
+print("audio length of drums", len(audioTimeC))
 print("--------------------------------")
-print("audioSync: ",audioSync)
+print("audioSync: ",len(audioSync))
 print("--------------------------------")
 tempoSync, beat_timeSync = librosa.beat.beat_track(y=audioSync, sr=sr, start_bpm=80, units='time')
+print("Beat time original", beat_times)
+print("Beat time D", beat_timeD)
+print("Beat time changed", beat_timeC)
 print("Beat time sync: ", beat_timeSync)
 print("Original song beats: ", beat_timeS[0:4])
-
+beatInterval=((1/tempoSync)*60)
+lastBeat=0
+for beat in beat_timeS:
+  print (beatInterval -beat +lastBeat)
+  lastBeat=beat
+print(beatInterval+beat_timeSync[1])
 # write a wav file where the 2nd channel has the estimated tempo:
 
 #sf.write("data/StarLoveTempo.wav", audioTimes, np.int32(sr))
+
 
