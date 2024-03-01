@@ -1,4 +1,4 @@
-import numpy as np, scipy, matplotlib.pyplot as plt, IPython.display as ipd
+import numpy as np, scipy, matplotlib.pyplot as plt
 import librosa, librosa.display
 from ipywidgets import interact
 import soundfile as sf
@@ -9,7 +9,6 @@ import wave
 #sr = sample rate, how many audio snippets are taken per second, defaults to 22050
 #audiotimes list of audioValues
 audioTimes, sr = librosa.load('data/drumMetronome.wav', sr=11025)
-ipd.Audio(audioTimes, rate=sr)
 tempo, beat_times = librosa.beat.beat_track(y=audioTimes, sr=sr, start_bpm=80, units='time')
 
 #rough trim of the data based on the capturing the first drum beat 
@@ -38,15 +37,14 @@ print("Drum beat times Length: ", len(beat_timeD))
 #print("audioTime start: ",audioTimes[0:100])
 #print("audioTime end: ",audioTimes[-1:-100:-1])
 #print("audioTimes: ",audioTimes[::1000])
-IPython.display.display(IPython.display.Audio("data/drum2.wav"))
-audioTimeS, sr = librosa.load('data/StarLove.wav', sr=11025)
-ipd.Audio(audioTimeS, rate=sr)
+audioTimeS, sr = librosa.load('data/thatManOfMine.wav)', sr=11025)
+
 tempoSong, beat_timeS = librosa.beat.beat_track(y=audioTimeS, sr=sr, start_bpm=80, units='time')
-print("StarLove tempo: ",tempoSong)
-print("StarLove beat times Length: ", len(beat_timeS))
+print("Song tempo: ",tempoSong)
+print("Song beat times Length: ", len(beat_timeS))
 #print("beat times: ",beat_timeS)
 
-#Modify drum beat to StarLoveTempo
+#Modify drum beat to original song
 CHANNELS = 1
 swidth = 2
 Change_RATE = tempoSong/tempoDrum
@@ -65,7 +63,6 @@ wf.close()
 
 #display new beat
 audioTimeC, sr = librosa.load('data/drumChanged.wav', sr=11025)
-ipd.Audio(audioTimeC, rate=sr)
 tempoChanged, beat_timeC = librosa.beat.beat_track(y=audioTimeC, sr=sr, start_bpm=80, units='time')
 print("Modified Drum tempo: ",tempoChanged)
 print("first 4 beat times of the song", beat_timeS[0:4])
@@ -96,8 +93,5 @@ for beat in beat_timeS:
   print (beatInterval -beat +lastBeat)
   lastBeat=beat
 print(beatInterval+beat_timeSync[1])
-# write a wav file where the 2nd channel has the estimated tempo:
-
-#sf.write("data/StarLoveTempo.wav", audioTimes, np.int32(sr))
 
 
