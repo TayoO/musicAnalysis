@@ -17,7 +17,7 @@ tempo, beat_times = librosa.beat.beat_track(y=audioTimes, sr=sr, start_bpm=80, u
 drumTimes= audioTimes[24000:62000]
 
 # write a wav file where we trim the relevant audio:
-sf.write("data/drum2.wav", drumTimes, np.int32(sr))
+sf.write("data/drumWrite.wav", drumTimes, np.int32(sr))
 '''
 atTrim=[]
 start=0
@@ -37,7 +37,7 @@ print("Drum beat times Length: ", len(beat_timeD))
 #print("audioTime start: ",audioTimes[0:100])
 #print("audioTime end: ",audioTimes[-1:-100:-1])
 #print("audioTimes: ",audioTimes[::1000])
-audioTimeS, sr = librosa.load('data/thatManOfMine.wav)', sr=11025)
+audioTimeS, sr = librosa.load('data/sample.wav', sr=11025)
 
 tempoSong, beat_timeS = librosa.beat.beat_track(y=audioTimeS, sr=sr, start_bpm=80, units='time')
 print("Song tempo: ",tempoSong)
@@ -49,7 +49,7 @@ CHANNELS = 1
 swidth = 2
 Change_RATE = tempoSong/tempoDrum
 
-spf = wave.open('data/drum2.wav', 'rb')
+spf = wave.open('data/drumWrite.wav', 'rb')
 RATE=spf.getframerate()
 signal = spf.readframes(-1)
 
