@@ -28,9 +28,9 @@ while drumTimes[stop] ==0:
   stop-=1
 atTrim = drumTimes[start:stop]
 '''
-tempoDrum, beat_timeD = librosa.beat.beat_track(y=drumTimes, sr=sr, start_bpm=80, units='time')
+tempoDrum, beatD = librosa.beat.beat_track(y=drumTimes, sr=sr, start_bpm=80, units='time')
 print("Drum tempo: ",tempoDrum)
-print("Drum beat times Length: ", len(beat_timeD))
+print("Drum beat times Length: ", len(beatD))
 #print("beat times: ",beat_timeD)
 #print("sr: ",sr)
 #print("audioTimes Length: ", len(atTrim))
@@ -39,9 +39,9 @@ print("Drum beat times Length: ", len(beat_timeD))
 #print("audioTimes: ",audioTimes[::1000])
 audioTimeS, sr = librosa.load('data/sample.wav', sr=11025)
 
-tempoSong, beat_timeS = librosa.beat.beat_track(y=audioTimeS, sr=sr, start_bpm=80, units='time')
+tempoSong, beatS = librosa.beat.beat_track(y=audioTimeS, sr=sr, start_bpm=80, units='time')
 print("Song tempo: ",tempoSong)
-print("Song beat times Length: ", len(beat_timeS))
+print("Song beat times Length: ", len(beatS))
 #print("beat times: ",beat_timeS)
 
 #Modify drum beat to original song
@@ -63,18 +63,27 @@ wf.close()
 
 #display new beat
 audioTimeC, sr = librosa.load('data/drumChanged.wav', sr=11025)
-tempoChanged, beat_timeC = librosa.beat.beat_track(y=audioTimeC, sr=sr, start_bpm=80, units='time')
+tempoChanged, beatC = librosa.beat.beat_track(y=audioTimeC, sr=sr, start_bpm=80, units='time')
 print("Modified Drum tempo: ",tempoChanged)
-print("first 4 beat times of the song", beat_timeS[0:4])
-print("Beat times of drum", beat_timeC)
+print("first 4 beat times of the song", beatS[0:4])
+print("Beat times of drum", beatC)
 print("audioTimes of song: ", audioTimeS)
 print("audioTimes of modified beat: ", audioTimeC)
 #adjust drum beat to start at the same time as the original song
-frameDif= round(sr*(beat_timeS[0]-beat_timeC[0]))
+frameDif= round(sr*(beatS[0]-beatC[0]))
 print ("Differences of frames between first beats: ", frameDif)
-audioZeros=np.zeros(frameDif)
-print(len(audioZeros))
-audioSync=np.append(audioZeros,audioTimeC)
+if (frameDif>0):
+  
+  audioZeros=np.zeros(frameDif)
+  audioSync=np.append(audioZeros,audioTimeC)
+  tempoC, beatC = librosa.beat.beat_track(y=audioSync, sr=sr, start_bpm=80, units='time')
+  
+else:
+  audioZeros=np.zeros(0-frameDif)
+  audioSync=np.append(audioZeros,audioTimeS)
+  tempoSong, beatS = librosa.beat.beat_track(y=audioSync, sr=sr, start_bpm=80, units='time')
+
+'''
 print(len(audioSync))
 print("--------------------------------")
 print("audio length of drums", len(audioTimeC))
@@ -87,11 +96,12 @@ print("Beat time D", beat_timeD)
 print("Beat time changed", beat_timeC)
 print("Beat time sync: ", beat_timeSync)
 print("Original song beats: ", beat_timeS[0:4])
-beatInterval=((1/tempoSync)*60)
+'''
+beatInterval=((1/tempoSong)*60)
 lastBeat=0
-for beat in beat_timeS:
+for beat in beatS:
   print (beatInterval -beat +lastBeat)
   lastBeat=beat
-print(beatInterval+beat_timeSync[1])
+print(beatInterval+beatC[1])
 
 
