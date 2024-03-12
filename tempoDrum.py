@@ -5,6 +5,8 @@ import soundfile as sf
 import IPython
 import time
 import wave
+from pydub import AudioSegment
+from pydub.playback import play
 
 #sr = sample rate, how many audio snippets are taken per second, defaults to 22050
 #audiotimes list of audioValues
@@ -102,6 +104,12 @@ lastBeat=0
 for beat in beatS:
   print (beatInterval -beat +lastBeat)
   lastBeat=beat
+print("beat interval")
 print(beatInterval+beatC[1])
 
+sound1 = AudioSegment.from_wav("data/drumChanged.wav")
+sound2 = AudioSegment.from_wav("data/sample.wav")
+overlay = sound1.overlay(sound2, position=1000)
 
+play(overlay)
+overlay.export("data/songWithBeat.wav", format="wav")
