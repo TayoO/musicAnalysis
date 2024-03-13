@@ -106,10 +106,22 @@ for beat in beatS:
   lastBeat=beat
 print("beat interval")
 print(beatInterval+beatC[1])
-
+'''
 sound1 = AudioSegment.from_wav("data/drumChanged.wav")
 sound2 = AudioSegment.from_wav("data/sample.wav")
+'''
+y1, sample_rate1 = librosa.load('data/sample.wav', mono=True)
+y2, sample_rate2 = librosa.load("data/drumChanged.wav", mono=True)
+
+# MERGE
+librosa.display.waveshow((y1+y2)/2, sr=int((sample_rate1+sample_rate2)/2))
+
+# REPRODUCE
+ip.display.Audio((y1+y2)/2, rate=int((sample_rate1+sample_rate2)/2))
+
+'''
 overlay = sound1.overlay(sound2, position=1000)
 
 play(overlay)
 overlay.export("data/songWithBeat.wav", format="wav")
+'''
