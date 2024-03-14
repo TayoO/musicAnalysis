@@ -72,18 +72,32 @@ print("Beat times of drum", beatC)
 print("audioTimes of song: ", audioTimeS)
 print("audioTimes of modified beat: ", audioTimeC)
 #adjust drum beat to start at the same time as the original song
-frameDif= round(sr*(beatS[0]-beatC[0]))
-print ("Differences of frames between first beats: ", frameDif)
-if (frameDif>0):
-  
+delay= round(1000*(beatS[0]-beatC[0]))
+#print ("Differences of frames between first beats: ", frameDif)
+delayAudio= librosa.tone(440, duration=delay/1000)
+tempoDelay, beatDelay = librosa.beat.beat_track(y=delayAudio, sr=sr, start_bpm=80, units='time')
+#delayBeat, sr = librosa.load(beatDelay, sr=11025)
+
+if (delay>0):
+  startAdjusted= np.append(beatDelay,audioTimeC)
+  librosa.output.write_wav('data/drumChanged.wav', startAdjusted, sr)
+else:
+  startAdjusted= np.append(beatDelay,audioTimeS)
+  librosa.output.write_wav('data/sampleChanged.wav', startAdjusted, sr)
+'''
   audioZeros=np.zeros(frameDif)
   audioSync=np.append(audioZeros,audioTimeC)
   tempoC, beatC = librosa.beat.beat_track(y=audioSync, sr=sr, start_bpm=80, units='time')
   
-else:
+else: 
   audioZeros=np.zeros(0-frameDif)
   audioSync=np.append(audioZeros,audioTimeS)
   tempoSong, beatS = librosa.beat.beat_track(y=audioSync, sr=sr, start_bpm=80, units='time')
+'''
+songTime=librosa.get_duration(path="data/sampleChanged.wav")
+drumTime=librosa.get_duration(path="data/drumChanged.wav")
+print ("Song time: ",songTime)
+print ("Beat time: ",drumTime)
 
 '''
 print(len(audioSync))
@@ -102,7 +116,7 @@ print("Original song beats: ", beat_timeS[0:4])
 beatInterval=((1/tempoSong)*60)
 lastBeat=0
 for beat in beatS:
-  print (beatInterval -beat +lastBeat)
+  #print (beatInterval -beat +lastBeat)
   lastBeat=beat
 print("beat interval")
 print(beatInterval+beatC[1])
@@ -110,7 +124,7 @@ print(beatInterval+beatC[1])
 sound1 = AudioSegment.from_wav("data/drumChanged.wav")
 sound2 = AudioSegment.from_wav("data/sample.wav")
 '''
-y1, sample_rate1 = librosa.load('data/sample.wav', mono=True)
+y1, sample_rate1 = librosa.load('data/sampleChanged.wav', mono=True)
 y2, sample_rate2 = librosa.load("data/drumChanged.wav", mono=True)
 
 # MERGE
